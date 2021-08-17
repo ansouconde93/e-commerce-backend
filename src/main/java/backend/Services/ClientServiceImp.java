@@ -45,8 +45,10 @@ public class ClientServiceImp implements ClientService{
                 Roles role = rolesRepository.findByNomrole(r.getNomrole());
                 if (role ==null){
                     r.setId(null);
-                    role = rolesRepository.save(r);
-                    c.getRoles().add(role);
+                    if(rolesRepository.findByNomrole("admin")==null){ // we juste one admin.
+                        role = rolesRepository.save(r);
+                        c.getRoles().add(role);
+                    }
                 }
             });
             client.setPassword(passwordEncoder);
