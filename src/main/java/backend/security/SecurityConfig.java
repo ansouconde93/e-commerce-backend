@@ -48,10 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         http.authorizeRequests().antMatchers(HttpMethod.POST,"/uploadPhotoProduct/{id}").hasAuthority("admin");
         http.authorizeRequests().antMatchers(HttpMethod.DELETE,"/category/delete/{id}").hasAuthority("admin");
         http.authorizeRequests().antMatchers(HttpMethod.POST,"/category/save").hasAuthority("admin");
-        http.authorizeRequests().antMatchers(HttpMethod.POST,"/orders/{actionToDo}").hasAuthority("admin");
-        http.authorizeRequests().antMatchers(HttpMethod.POST,"/orders/{actionToDo}").hasAuthority("user");
-        http.authorizeRequests().antMatchers(HttpMethod.POST,"/client").hasAuthority("admin");
-        http.authorizeRequests().antMatchers(HttpMethod.POST,"/client").hasAuthority("user");
+        http.authorizeRequests().antMatchers(HttpMethod.POST,"/orders/{actionToDo}")
+                .hasAnyAuthority("admin","user");
+        http.authorizeRequests().antMatchers(HttpMethod.POST,"/client")
+                .hasAnyAuthority("admin","user");
 
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(new EcomAuthenticationFilter(authenticationManager()));
