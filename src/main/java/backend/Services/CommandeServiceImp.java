@@ -1,15 +1,12 @@
 package backend.Services;
 
-import backend.DAO.ClientRepository;
 import backend.DAO.CommandeRepository;
 import backend.DAO.PaymentRepository;
 import backend.DAO.ProductItemRepository;
-import backend.Entities.Client;
 import backend.Entities.Commande;
 import backend.Entities.Payment;
 import backend.Entities.ProductItem;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 
 public class CommandeServiceImp implements CommandeService {
-    @Autowired
-    private ClientService clientService;
     @Autowired
     private CommandeRepository commandeRepository;
     @Autowired
@@ -34,7 +29,6 @@ public class CommandeServiceImp implements CommandeService {
             commande1 = commandeRepository.findById(commande.getId()).get(); commande1.setPayment(p);
         }else{
             commande.setId(null);
-
             if(commande.getPayment()!=null){
                 paymentRepository.save(commande.getPayment());
             }

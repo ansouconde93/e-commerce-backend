@@ -10,20 +10,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -39,17 +32,16 @@ public class ClientServiceImp implements ClientService{
         Client user = clientRepository.findByUsername(client.getUsername());
         Client c = new Client();
         if (user == null){
+            client.setId(null);
             String passwordEncoder = bCryptPasswordEncoder.encode(client.getPassword());
             //add roles in db
             client.getRoles().forEach(r->{
                 Roles role = rolesRepository.findByNomrole(r.getNomrole());
                 if (role ==null){
                     r.setId(null);
-                    if(rolesRepository.findByNomrole("admin")==null){ // we juste one admin.
-                        role = rolesRepository.save(r);
-                        c.getRoles().add(role);
-                    }
+                    role = rolesRepository.save(r);
                 }
+                c.getRoles().add(role);
             });
             client.setPassword(passwordEncoder);
             Client u = clientRepository.save(client);
@@ -107,12 +99,13 @@ public class ClientServiceImp implements ClientService{
     @Override
     public Client getClientByUsername(String username) {
         Client client = new Client();
-        client.setName(clientRepository.findByUsername(username).getName());
-        client.setUsername(clientRepository.findByUsername(username).getUsername());
-        client.setAddress(clientRepository.findByUsername(username).getAddress());
-        client.setCountry(clientRepository.findByUsername(username).getCountry());
-        client.setPhoneNumber(clientRepository.findByUsername(username).getPhoneNumber());
-        client.setZipCode(clientRepository.findByUsername(username).getZipCode());
+        Client c = clientRepository.findByUsername(username);
+        client.setName(c.getName());
+        client.setUsername(c.getUsername());
+        client.setAddress(c.getAddress());
+        client.setCountry(c.getCountry());
+        client.setPhoneNumber(c.getPhoneNumber());
+        client.setZipCode(c.getZipCode());
         return client;
     }
 }

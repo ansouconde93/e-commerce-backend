@@ -16,5 +16,5 @@ public class SecurityConstante {
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING ="Authorization";
     public static final String HEADER_REFRESH_TOKEN ="RefreshToken";
-    public static final long EXPIRATION_TIME_REFRESH_TOKEN =  1728_000_000;// refresh token espire après 20 jours de sa creation
+    public static final long EXPIRATION_TIME_REFRESH_TOKEN = 1728_000_000;// refresh token espire après 20 jours de sa creation
 }

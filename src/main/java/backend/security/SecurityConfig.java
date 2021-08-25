@@ -27,10 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        //http.formLogin();
-
-        //definir son propre formulaire d'authentification
-        //http.formLogin().loginPage("/myLoginForm.html");
 
         //Desactivation de la session
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -52,11 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .hasAnyAuthority("admin","user");
         http.authorizeRequests().antMatchers(HttpMethod.POST,"/client")
                 .hasAnyAuthority("admin","user");
-
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(new EcomAuthenticationFilter(authenticationManager()));
         http.addFilterBefore(new EcomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
-
 }
 

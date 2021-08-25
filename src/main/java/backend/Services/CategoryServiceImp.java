@@ -77,7 +77,12 @@ public class CategoryServiceImp implements CategoryService{
 
     @Override
     public Category saveCategory(Category category) {
-        Category cat = categoryRepository.save(category);
+        Category category1 = categoryRepository.findByName(category.getName());
+        Category cat;
+        if (category1 == null)
+            cat = categoryRepository.save(category);
+        else
+            cat = category1;
         if (cat.getProducts() != null){
             cat.getProducts().forEach(r->{
                 productRepository.findById(r.getIdproduct()).get().setCategory(cat);

@@ -1,8 +1,11 @@
 package backend;
 
 import backend.Entities.Category;
+import backend.Entities.Client;
 import backend.Entities.Product;
+import backend.Entities.Roles;
 import backend.ressources.CategoryController;
+import backend.ressources.ClientController;
 import backend.ressources.ProductController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,14 +14,45 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 public class BackendApplication {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		ApplicationContext applicationContext =  SpringApplication.
 				run(BackendApplication.class, args);
 		CategoryController categoryController= applicationContext.getBean(CategoryController.class);
 		ProductController productController = applicationContext.getBean(ProductController.class);
+		ClientController clientController = applicationContext.getBean(ClientController.class);
+
+		/*
+		Preparing default admin
+		 */
+		Roles role = new Roles();
+		role.setNomrole("admin");
+		role.setId(null);
+		Client client = new Client();
+		client.setName("fst2021");
+		client.setZipCode("fst2021_1068");
+		client.setCountry("Tunisie");
+		client.setPhoneNumber("12345698");
+		client.setUsername("fst2021@gmail.com");
+		client.setAddress("Tunis_Fst");
+		client.setPassword("1234");
+		client.getRoles().add(role);
+		client.setId(null);
+		clientController.saveClient(client);
+
+        String imageDirectory = "images/products";
+		Path productImagePath = Paths.get(imageDirectory);
+		if (! Files.exists(productImagePath)){
+			Files.createDirectories(productImagePath);
+		}
+
 		Category c1= new Category();
 		c1.setId(null);
 		c1.setName("Computer");
@@ -156,8 +190,6 @@ public class BackendApplication {
 
 	@Bean
 	public BCryptPasswordEncoder getBCryptPasswordEncoder() {
-
 		return new BCryptPasswordEncoder();
 	}
-
 }

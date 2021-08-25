@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +100,6 @@ public class ProductServiceImp implements ProductService{
             Files.delete(Paths.get(
                     System.getProperty("user.home")+"/project/images/product/"+product.get().getPhotoname()));
             */
-
             Files.delete(Paths.get(imageDirectory+"/"+product.get().getPhotoname()));
         }
     }
@@ -196,7 +194,6 @@ public class ProductServiceImp implements ProductService{
             category.setDescription(pr.getCategory().getDescription());
             category.setName(pr.getCategory().getName());
             category.setPhoto(pr.getCategory().getPhoto());
-            //p.setCategory(category);
             int indice = categories.indexOf(category);
             if( indice >-1){
                 categories.get(indice).getProducts().add(p);
@@ -210,33 +207,23 @@ public class ProductServiceImp implements ProductService{
 
     @Override
     public byte[] getPhoto(long id)  throws IOException{
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isPresent()){
             /*
             return Files.readAllBytes(Paths.get(System
                     .getProperty("user.home")+"/project/images/product/"+product.get().getPhotoname()));
             */
-            return Files.readAllBytes(Paths.get(imageDirectory+"/"+product.get().getPhotoname()));
-        }
-        return null;
+        return Files.readAllBytes(Paths.get(imageDirectory+"/"+id+".png"));
     }
 
     @Override
     public void updatePhotoProduct(MultipartFile file,long id) throws IOException {
-        Path productImagePath = Paths.get(imageDirectory);
-        if (! Files.exists(productImagePath)){
-            Files.createDirectories(productImagePath);
-        }
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()){
-            Product p = product.get();
-            p.setPhotoname(id+".png");
+            product.get().setPhotoname(id+".png");
             /*
             Files.write(Paths.get(System
                     .getProperty("user.home")+"/project/images/product/"+p.getPhotoname()),file.getBytes());
              */
-            Files.write(Paths.get(imageDirectory+"/"+p.getPhotoname()),file.getBytes());
-            productRepository.save(p);
+            Files.write(Paths.get(imageDirectory+"/"+id+".png"),file.getBytes());
         }
     }
 }
